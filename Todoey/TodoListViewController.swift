@@ -9,7 +9,7 @@ import UIKit
 class TodoListViewController: UITableViewController {
     
     let userDefauts = UserDefaults.standard
-    var itemArray: [String] = ["Find Mike", "Buy Eggs", "Destory Domogorgon"]
+    var itemArray: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +18,6 @@ class TodoListViewController: UITableViewController {
             itemArray = items
         }
     }
-    
 }
 
 // MARK: - Funcs
