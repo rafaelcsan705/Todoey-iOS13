@@ -9,13 +9,14 @@ import CoreData
 
 class TodoListViewController: UITableViewController {
     
+    let searchBar = UISearchBar()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var itemArray: [Item] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("Folder: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        searchBar.delegate = self
         loadItems()
     }
 }
@@ -56,11 +57,9 @@ extension TodoListViewController {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         do {
-            if let arr = try context.fetch(.init(entityName: "Item")) as? [Item] {
-                itemArray = arr
-            }
+            itemArray = try context.fetch(request)
             tableView.reloadData()
         } catch {
             print("Error decoding ItemArray: \(error)")
@@ -90,5 +89,24 @@ extension TodoListViewController {
         itemArray[indexPath.row].isSelected.toggle()
         saveItems()
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: - SearchBar Methods
+extension TodoListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request: NSFetchRequest = Item.fetchRequest()
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        loadItems(with: request)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            loadItems(with: Item.fetchRequest())
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
     }
 }
