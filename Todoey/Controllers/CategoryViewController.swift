@@ -53,8 +53,16 @@ extension CategoryViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: "goToItems", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as? TodoListViewController
+        if let vc = destinationVC,
+           let indexPath = tableView.indexPathForSelectedRow {
+            vc.selectedCategory = categoryArr[indexPath.row]
+        }
     }
 }
 
