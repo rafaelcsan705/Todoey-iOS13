@@ -93,7 +93,16 @@ extension TodoListViewController {
     
     // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        todoItems?[indexPath.row].isSelected.toggle()
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write({
+                    item.isSelected.toggle()
+                })
+            } catch {
+                print("Error updating item, \(error)")
+            }
+        }
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
