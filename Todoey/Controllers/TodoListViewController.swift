@@ -96,7 +96,8 @@ extension TodoListViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write({
-                    item.isSelected.toggle()
+                    realm.delete(item)
+//                    item.isSelected.toggle()
                 })
             } catch {
                 print("Error updating item, \(error)")
