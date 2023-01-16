@@ -6,6 +6,7 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
 class TodoListViewController: UITableViewController {
     
@@ -80,8 +81,9 @@ extension TodoListViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Reuse or create a cell.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath) as! SwipeTableViewCell
         if let item = todoItems?[indexPath.row] {
+            cell.delegate = self
             cell.textLabel?.text = item.title
             cell.textLabel?.textAlignment = .left
             cell.accessoryType = item.isSelected ? .checkmark : .none
