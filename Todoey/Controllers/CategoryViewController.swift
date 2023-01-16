@@ -7,17 +7,17 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
-
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var categoryArr: [CategoryItem] = []
+    
+    let realm = try! Realm()
+    var categories: Results<Category>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        loadData()
+        loadCategories()
     }
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -30,10 +30,9 @@ class CategoryViewController: UITableViewController {
         alert.addAction(.init(title: "Confirm", style: .default, handler: { [weak self] (_) in
             guard let self = self else { return }
             if let value = textField.text {
-                let category = CategoryItem(context: self.context)
+                let category = Category()
                 category.name = value
-                self.categoryArr.append(category)
-                self.saveData()
+                self.save(category: category)
             }
         }))
         present(alert, animated: true)
@@ -43,12 +42,18 @@ class CategoryViewController: UITableViewController {
 // MARK: - TableView DataSource
 extension CategoryViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArr.count
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath)
-        cell.textLabel?.text = categoryArr[indexPath.row].name
+        if let categorie = categories?[indexPath.row] {
+            cell.textLabel?.text = categorie.name
+            cell.textLabel?.textAlignment = .left
+        } else {
+            cell.textLabel?.text = "No Categories Yet"
+            cell.textLabel?.textAlignment = .center
+        }
         return cell
     }
     
@@ -60,29 +65,28 @@ extension CategoryViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as? TodoListViewController
         if let vc = destinationVC,
-           let indexPath = tableView.indexPathForSelectedRow {
-            vc.selectedCategory = categoryArr[indexPath.row]
+           let indexPath = tableView.indexPathForSelectedRow,
+           let categories = categories?[indexPath.row] {
+            vc.selectedCategory = categories
         }
     }
 }
 
-// MARK: - CoreData Funcs
+// MARK: - Realm Funcs
 extension CategoryViewController {
-    func saveData() {
+    func save(category: Category) {
         do {
-            try context.save()
+            try realm.write({
+                realm.add(category)
+            })
         } catch {
             print("Error saving data: \(error)")
         }
         tableView.reloadData()
     }
-    
-    func loadData(with request: NSFetchRequest<CategoryItem> = CategoryItem.fetchRequest()) {
-        do {
-            categoryArr = try context.fetch(request)
-        } catch {
-            print("Error loading data: \(error)")
-        }
+
+    func loadCategories() {
+        categories = realm.objects(Category.self)
         tableView.reloadData()
     }
 }

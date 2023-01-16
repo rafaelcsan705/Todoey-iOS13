@@ -98,6 +98,10 @@ Packages
 xcuserdata
 *.xcodeproj
 
+# OS-specific files
+.DS_Store
+.Trashes
+Thumbs.db
 
 ### Xcode ###
 
@@ -113,3 +117,4 @@ xcuserdata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift,cocoapods,swiftpackagemanager
+Todoey.xcodeproj/project.xcworkspace/xcuserdata/rafaelcsantos.xcuserdatad/UserInterfaceState.xcuserstate
