@@ -6,6 +6,7 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
 class TodoListViewController: UITableViewController {
     
@@ -73,15 +74,15 @@ extension TodoListViewController {
 
 // MARK: - TableView Methods
 extension TodoListViewController {
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoItems?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Reuse or create a cell.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath) as! SwipeTableViewCell
         if let item = todoItems?[indexPath.row] {
+            cell.delegate = self
             cell.textLabel?.text = item.title
             cell.textLabel?.textAlignment = .left
             cell.accessoryType = item.isSelected ? .checkmark : .none
@@ -92,8 +93,6 @@ extension TodoListViewController {
         return cell
     }
     
-    
-    // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let item = todoItems?[indexPath.row] {
             do {
@@ -107,6 +106,18 @@ extension TodoListViewController {
         }
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: - SwipeCellKit Delegate
+extension TodoListViewController: SwipeTableViewCellDelegate {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
+        guard orientation == .right else { return nil }
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            print("Delete!")
+        }
+        deleteAction.image = UIImage(named: "deleteIcon")
+        return [deleteAction]
     }
 }
 
