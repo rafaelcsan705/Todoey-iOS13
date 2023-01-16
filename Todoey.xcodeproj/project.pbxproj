@@ -156,6 +156,7 @@
 			mainGroup = EB2BE4ED239524DB00FB933B;
 			packageReferences = (
 				88B6AB882971955E002BF9B6 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				8829C7062975F95C00B6D70F /* XCRemoteSwiftPackageReference "SwipeCellKit" */,
 			);
 			productRefGroup = EB2BE4F7239524DB00FB933B /* Products */;
 			projectDirPath = "";
@@ -392,6 +393,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8829C7062975F95C00B6D70F /* XCRemoteSwiftPackageReference "SwipeCellKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:SwipeCellKit/SwipeCellKit.git";
+			requirement = {
+				branch = develop;
+				kind = branch;
+			};
+		};
 		88B6AB882971955E002BF9B6 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:realm/realm-swift.git";
