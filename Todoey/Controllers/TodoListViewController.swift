@@ -8,9 +8,8 @@ import UIKit
 import RealmSwift
 import SwipeCellKit
 
-class TodoListViewController: UITableViewController {
-    
-    let realm = try! Realm()
+class TodoListViewController: SwipeTableViewController {
+
     var todoItems: Results<Item>?
     
     let searchBar = UISearchBar()
@@ -24,6 +23,12 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
 
         searchBar.delegate = self
+        super.styleTableViewCell()
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        guard let item = selectedCategory?.items[indexPath.row] else { return }
+        self.delete(item)
     }
 }
 
@@ -43,27 +48,16 @@ extension TodoListViewController {
         }
         alert.addAction(.init(title: "Add Item", style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
-            if let value = textField.text {
-                self.saveItem(titleForItem: value)
+            if let value = textField.text,
+               let currentCategory = self.selectedCategory {
+                let item = Item()
+                item.title = value
+                item.dateCreated = Date()
+                currentCategory.items.append(item)
+                self.save(currentCategory)
             }
         }))
         present(alert, animated: true)
-    }
-    
-    func saveItem(titleForItem: String) {
-        if let currentCategory = self.selectedCategory {
-            do {
-                try self.realm.write({
-                    let item = Item()
-                    item.title = titleForItem
-                    item.dateCreated = Date()
-                    currentCategory.items.append(item)
-                })
-            } catch {
-                print("Error saving new items, \(error)")
-            }
-        }
-        self.tableView.reloadData()
     }
     
     func loadItems() {
@@ -80,9 +74,8 @@ extension TodoListViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Reuse or create a cell.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath) as! SwipeTableViewCell
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let item = todoItems?[indexPath.row] {
-            cell.delegate = self
             cell.textLabel?.text = item.title
             cell.textLabel?.textAlignment = .left
             cell.accessoryType = item.isSelected ? .checkmark : .none
@@ -97,8 +90,8 @@ extension TodoListViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write({
-                    realm.delete(item)
-//                    item.isSelected.toggle()
+//                    realm.delete(item)
+                    item.isSelected.toggle()
                 })
             } catch {
                 print("Error updating item, \(error)")
@@ -107,18 +100,7 @@ extension TodoListViewController {
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
-}
-
-// MARK: - SwipeCellKit Delegate
-extension TodoListViewController: SwipeTableViewCellDelegate {
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeCellKit.SwipeActionsOrientation) -> [SwipeCellKit.SwipeAction]? {
-        guard orientation == .right else { return nil }
-        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            print("Delete!")
-        }
-        deleteAction.image = UIImage(named: "deleteIcon")
-        return [deleteAction]
-    }
+    
 }
 
 // MARK: - SearchBar Methods
