@@ -23,7 +23,6 @@ class TodoListViewController: SwipeTableViewController {
         super.viewDidLoad()
 
         searchBar.delegate = self
-        super.styleTableViewCell()
     }
     
     override func updateModel(at indexPath: IndexPath) {
