@@ -16,6 +16,7 @@ class SwipeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        styleTableViewCell()
     }
     
     func updateModel(at indexPath: IndexPath) {
