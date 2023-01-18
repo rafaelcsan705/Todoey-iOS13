@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     
@@ -54,6 +55,8 @@ extension CategoryViewController {
         if let categorie = categories?[indexPath.row] {
             cell.textLabel?.text = categorie.name
             cell.textLabel?.textAlignment = .left
+            cell.backgroundColor = UIColor.randomFlat()
+            cell.backgroundColor = .randomFlat()
         } else {
             cell.textLabel?.text = "No Categories Yet"
             cell.textLabel?.textAlignment = .center
