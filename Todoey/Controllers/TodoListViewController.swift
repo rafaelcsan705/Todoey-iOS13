@@ -7,9 +7,10 @@
 import UIKit
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
-
+    
     var todoItems: Results<Item>?
     
     let searchBar = UISearchBar()
@@ -18,10 +19,10 @@ class TodoListViewController: SwipeTableViewController {
             loadItems()
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         searchBar.delegate = self
     }
     
@@ -47,16 +48,28 @@ extension TodoListViewController {
         }
         alert.addAction(.init(title: "Add Item", style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
-            if let value = textField.text,
-               let currentCategory = self.selectedCategory {
-                let item = Item()
-                item.title = value
-                item.dateCreated = Date()
-                currentCategory.items.append(item)
-                self.save(currentCategory)
+            if let value = textField.text {
+                self.save(title: value)
             }
         }))
         present(alert, animated: true)
+    }
+    
+    func save(title: String) {
+        if let currentCategory = self.selectedCategory {
+            do {
+                try realm.write({
+                    let item = Item()
+                    item.title = title
+                    item.dateCreated = Date()
+                    currentCategory.items.append(item)
+                })
+            } catch {
+                print("Error saving data: \(error)")
+            }
+        }
+        
+        tableView.reloadData()
     }
     
     func loadItems() {
@@ -78,6 +91,15 @@ extension TodoListViewController {
             cell.textLabel?.text = item.title
             cell.textLabel?.textAlignment = .left
             cell.accessoryType = item.isSelected ? .checkmark : .none
+            
+            if let todoItemsCount = todoItems?.count,
+               let backgroundStr = selectedCategory?.backgroundColor,
+               let color = UIColor(hexString: backgroundStr) {
+                let backgroundPercentage: CGFloat = CGFloat(indexPath.row) / CGFloat(todoItemsCount)
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+                cell.backgroundColor = color.darken(byPercentage: backgroundPercentage)
+                
+            }
         } else {
             cell.textLabel?.text = "No Items Yet"
             cell.textLabel?.textAlignment = .center
@@ -89,7 +111,7 @@ extension TodoListViewController {
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write({
-//                    realm.delete(item)
+                    //                    realm.delete(item)
                     item.isSelected.toggle()
                 })
             } catch {
@@ -110,7 +132,7 @@ extension TodoListViewController: UISearchBarDelegate {
         }
         tableView.reloadData()
     }
-
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
             loadItems()
