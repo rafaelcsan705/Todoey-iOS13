@@ -13,7 +13,8 @@ class TodoListViewController: SwipeTableViewController {
     
     var todoItems: Results<Item>?
     
-    let searchBar = UISearchBar()
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var selectedCategory: Category? {
         didSet {
             loadItems()
@@ -24,6 +25,10 @@ class TodoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         
         searchBar.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setupNabBarTitleAndColour()
     }
     
     override func updateModel(at indexPath: IndexPath) {
@@ -75,6 +80,15 @@ extension TodoListViewController {
     func loadItems() {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title")
         tableView.reloadData()
+    }
+    
+    func setupNabBarTitleAndColour() {
+        if let categoryName = selectedCategory?.name,
+           let colourHex = selectedCategory?.backgroundColor {
+            searchBar.barTintColor = UIColor(hexString: colourHex)
+            setupNavBar(navBarTitle: categoryName, colour: colourHex)
+            
+        }
     }
 }
 
