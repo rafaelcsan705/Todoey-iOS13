@@ -19,6 +19,10 @@ class CategoryViewController: SwipeTableViewController {
 
         loadCategories()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setupNavBar(navBarTitle: "Todoey", colour: UIColor.orange.hexValue())
+    }
 
     override func updateModel(at indexPath: IndexPath) {
         guard let category = self.categories?[indexPath.row] else { return }

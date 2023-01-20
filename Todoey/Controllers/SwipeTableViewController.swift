@@ -9,6 +9,7 @@
 import Foundation
 import SwipeCellKit
 import RealmSwift
+import ChameleonFramework
 
 class SwipeTableViewController: UITableViewController {
     
@@ -78,6 +79,22 @@ extension SwipeTableViewController {
             }
         } catch {
             print("Error saving data: \(error)")
+        }
+    }
+}
+
+// MARK: - Funcs
+extension SwipeTableViewController {
+    func setupNavBar(navBarTitle: String, colour: String) {
+        guard let navBar = navigationController?.navigationBar else {
+            fatalError("NavController does not exist.")
+        }
+        
+        title = navBarTitle
+        if let color = UIColor(hexString: colour) {
+            navBar.backgroundColor = color
+            navBar.tintColor = ContrastColorOf(color, returnFlat: true)
+            navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: ContrastColorOf(color, returnFlat: true)]
         }
     }
 }

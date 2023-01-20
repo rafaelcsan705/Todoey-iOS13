@@ -78,7 +78,8 @@
                             <outlet property="delegate" destination="ndy-HQ-zun" id="Nju-Hl-AB9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Item" id="fbM-RM-h4G">
+                    <navigationItem key="navigationItem" title="Item" leftItemsSupplementBackButton="YES" id="fbM-RM-h4G">
+                        <barButtonItem key="backBarButtonItem" title="Todoye" id="YYX-sf-ySc"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="gbm-bZ-jvm">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
@@ -86,6 +87,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="g8N-lK-NVO" id="fnv-y4-ihl"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hhK-Ly-Qls" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -94,14 +98,12 @@
         <!--Navigation Controller-->
         <scene sceneID="4wL-y2-pOr">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fzh-tC-Guc" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" hidesBarsOnSwipe="YES" id="fzh-tC-Guc" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3hO-04-lKX">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="3hO-04-lKX">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                        <color key="tintColor" systemColor="systemOrangeColor"/>
-                        <color key="barTintColor" systemColor="systemOrangeColor"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <color key="textShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -112,6 +114,9 @@
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="V5U-vS-Lyj">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="SFC-Ot-25O" kind="relationship" relationship="rootViewController" id="ySS-at-gkj"/>
                     </connections>
