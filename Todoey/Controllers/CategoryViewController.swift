@@ -37,6 +37,7 @@ class CategoryViewController: SwipeTableViewController {
             if let value = textField.text {
                 let category = Category()
                 category.name = value
+                category.backgroundColor = UIColor.randomFlat().hexValue()
                 self.save(category)
             }
         }))
@@ -54,9 +55,8 @@ extension CategoryViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let categorie = categories?[indexPath.row] {
             cell.textLabel?.text = categorie.name
+            cell.backgroundColor = UIColor(hexString: categorie.backgroundColor)
             cell.textLabel?.textAlignment = .left
-            cell.backgroundColor = UIColor.randomFlat()
-            cell.backgroundColor = .randomFlat()
         } else {
             cell.textLabel?.text = "No Categories Yet"
             cell.textLabel?.textAlignment = .center
